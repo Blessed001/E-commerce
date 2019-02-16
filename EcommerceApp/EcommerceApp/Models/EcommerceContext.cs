@@ -14,5 +14,7 @@ namespace EcommerceApp.Models
         }
 
         public System.Data.Entity.DbSet<EcommerceApp.Models.Departament> Departaments { get; set; }
+
+        public System.Data.Entity.DbSet<EcommerceApp.Models.City> Cities { get; set; }
     }
 }

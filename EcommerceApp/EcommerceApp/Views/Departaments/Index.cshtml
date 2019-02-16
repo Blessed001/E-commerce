@@ -1,13 +1,13 @@
 ﻿@model IEnumerable<EcommerceApp.Models.Departament>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Departaments";
 }
 
-<h2>Index</h2>
+<h2>Departaments</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    @Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-primary"})
 </p>
 <table class="table">
     <tr>
@@ -23,9 +23,9 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Departamentid }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Departamentid }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Departamentid })
+            @Html.ActionLink("Edit", "Edit", new { id=item.Departamentid }, new { @class = "btn btn-warning" })
+            @Html.ActionLink("Details", "Details", new { id=item.Departamentid }, new { @class = "btn btn-info" })
+            @Html.ActionLink("Delete", "Delete", new { id=item.Departamentid }, new { @class = "btn btn-danger" })
         </td>
     </tr>
 }
