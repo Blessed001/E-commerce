@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using EcommerceApp.Classes;
 using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
@@ -17,7 +18,7 @@ namespace EcommerceApp.Controllers
         // GET: Cities
         public ActionResult Index()
         {
-            var cities = db.Cities.Include(c => c.Departament);
+            var cities = db.Cities.Include(c => c.Department);
             return View(cities.ToList());
         }
 
@@ -39,7 +40,8 @@ namespace EcommerceApp.Controllers
         // GET: Cities/Create
         public ActionResult Create()
         {
-            ViewBag.Departamentid = new SelectList(db.Departaments.OrderBy(a => a.Name), "Departamentid", "Name");
+           
+            ViewBag.DepartmentID = new SelectList(CombosHelper.GetDepartments(), "DepartmentId", "Name");
             return View();
         }
 
@@ -48,7 +50,7 @@ namespace EcommerceApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Cityid,Name,Departamentid")] City city)
+        public ActionResult Create([Bind(Include = "CityId,Name,DepartmentId")] City city)
         {
             if (ModelState.IsValid)
             {
@@ -57,7 +59,7 @@ namespace EcommerceApp.Controllers
                 return RedirectToAction("Index");
             }
 
-            ViewBag.Departamentid = new SelectList(db.Departaments.OrderBy(a => a.Name), "Departamentid", "Name", city.Departamentid);
+            ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartments(), "DepartmentId", "Name", city.DepartmentId);
             return View(city);
         }
 
@@ -73,7 +75,7 @@ namespace EcommerceApp.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.Departamentid = new SelectList(db.Departaments.OrderBy(a => a.Name), "Departamentid", "Name", city.Departamentid);
+            ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartments(), "DepartmentId", "Name", city.DepartmentId);
             return View(city);
         }
 
@@ -82,7 +84,7 @@ namespace EcommerceApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Cityid,Name,Departamentid")] City city)
+        public ActionResult Edit([Bind(Include = "CityId,Name,DepartmentId")] City city)
         {
             if (ModelState.IsValid)
             {
@@ -90,7 +92,7 @@ namespace EcommerceApp.Controllers
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            ViewBag.Departamentid = new SelectList(db.Departaments.OrderBy(a => a.Name), "Departamentid", "Name", city.Departamentid);
+            ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartments(), "DepartmentId", "Name", city.DepartmentId);
             return View(city);
         }
 
