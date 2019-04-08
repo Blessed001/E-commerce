@@ -44,6 +44,9 @@ namespace EcommerceApp.Models
         public virtual Department Department { get; set; }
         public virtual City City { get; set; }
         public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<Category> Categories { get; set; }
+        public virtual ICollection<Tax> Taxes { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
 
     }
 }

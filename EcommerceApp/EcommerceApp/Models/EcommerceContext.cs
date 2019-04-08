@@ -25,5 +25,11 @@ namespace EcommerceApp.Models
         public System.Data.Entity.DbSet<EcommerceApp.Models.Department> Departments { get; set; }
 
         public System.Data.Entity.DbSet<EcommerceApp.Models.User> Users { get; set; }
+
+        public System.Data.Entity.DbSet<EcommerceApp.Models.Category> Categories { get; set; }
+
+        public System.Data.Entity.DbSet<EcommerceApp.Models.Tax> Taxes { get; set; }
+
+        public System.Data.Entity.DbSet<EcommerceApp.Models.Product> Products { get; set; }
     }
 }

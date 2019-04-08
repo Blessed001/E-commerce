@@ -11,6 +11,7 @@ using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController : Controller
     {
         private EcommerceContext db = new EcommerceContext();
@@ -124,6 +125,14 @@ namespace EcommerceApp.Controllers
                     }
                 }
 
+                var db2 = new EcommerceContext();
+                var currentUser = db2.Users.Find(user.UserId);
+                if(currentUser.UserName != user.UserName)
+                {
+                    UsersHelper.UpdateUserName(currentUser.UserName, user.UserName);
+                }
+                db2.Dispose();
+
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
@@ -141,7 +150,7 @@ namespace EcommerceApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.Users.Find(id);
+            var user = db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -154,9 +163,10 @@ namespace EcommerceApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            User user = db.Users.Find(id);
+            var user = db.Users.Find(id);
             db.Users.Remove(user);
             db.SaveChanges();
+            UsersHelper.DeleteUser(user.UserName);
             return RedirectToAction("Index");
         }
         public JsonResult GetCities(int departmentId)

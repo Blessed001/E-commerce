@@ -10,6 +10,7 @@ using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DepartmentsController : Controller
     {
         private EcommerceContext db = new EcommerceContext();

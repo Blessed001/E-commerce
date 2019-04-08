@@ -11,6 +11,7 @@ using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class CompaniesController : Controller
     {
         private EcommerceContext db = new EcommerceContext();
