@@ -27,6 +27,10 @@ namespace EcommerceApp.Models
         public virtual Department Department { get; set; }
         public virtual ICollection<Company> Companies { get; set; }
         public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<Warehouse> Warehouses { get; set; }
+        public virtual ICollection<Customer> Customers { get; set; }
+        public virtual ICollection<Supplier> Suppliers { get; set; }
+
 
 
     }

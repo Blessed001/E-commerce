@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using EcommerceApp.Classes;
 using EcommerceApp.Models;
+using PagedList;
 
 namespace EcommerceApp.Controllers
 {
@@ -16,21 +17,20 @@ namespace EcommerceApp.Controllers
     {
         private EcommerceContext db = new EcommerceContext();
 
-        // GET: Cities
-        public ActionResult Index()
+        public ActionResult Index(int? page = null)
         {
-            var cities = db.Cities.Include(c => c.Department);
-            return View(cities.ToList());
+            page = (page ?? 1);
+            var cities = db.Cities.Include(c => c.Department).OrderBy(c => c.Department.Name).ThenBy(c => c.Name);
+            return View(cities.ToPagedList((int)page, 10));
         }
 
-        // GET: Cities/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = db.Cities.Find(id);
+            var city = db.Cities.Find(id);
             if (city == null)
             {
                 return HttpNotFound();
@@ -38,7 +38,6 @@ namespace EcommerceApp.Controllers
             return View(city);
         }
 
-        // GET: Cities/Create
         public ActionResult Create()
         {
            
@@ -46,32 +45,33 @@ namespace EcommerceApp.Controllers
             return View();
         }
 
-        // POST: Cities/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CityId,Name,DepartmentId")] City city)
+        public ActionResult Create(City city)
         {
             if (ModelState.IsValid)
             {
                 db.Cities.Add(city);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, response.Message);
             }
 
             ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartments(), "DepartmentId", "Name", city.DepartmentId);
             return View(city);
         }
 
-        // GET: Cities/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = db.Cities.Find(id);
+            var city = db.Cities.Find(id);
             if (city == null)
             {
                 return HttpNotFound();
@@ -80,31 +80,31 @@ namespace EcommerceApp.Controllers
             return View(city);
         }
 
-        // POST: Cities/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "CityId,Name,DepartmentId")] City city)
+        public ActionResult Edit(City city)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(city).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
             }
             ViewBag.DepartmentId = new SelectList(CombosHelper.GetDepartments(), "DepartmentId", "Name", city.DepartmentId);
             return View(city);
         }
 
-        // GET: Cities/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = db.Cities.Find(id);
+            var city = db.Cities.Find(id);
             if (city == null)
             {
                 return HttpNotFound();
@@ -112,15 +112,20 @@ namespace EcommerceApp.Controllers
             return View(city);
         }
 
-        // POST: Cities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            City city = db.Cities.Find(id);
+            var city = db.Cities.Find(id);
             db.Cities.Remove(city);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var response = DBHelper.SaveChanges(db);
+            if (response.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError(string.Empty, response.Message);
+            return View(city);
         }
 
         protected override void Dispose(bool disposing)

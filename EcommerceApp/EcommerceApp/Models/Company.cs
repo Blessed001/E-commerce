@@ -32,10 +32,12 @@ namespace EcommerceApp.Models
 
         [Required(ErrorMessage = "The fild {0} is requid")]
         [Range(1, double.MaxValue, ErrorMessage = "You mast select a {0}")]
+        [Display(Name = "Department")]
         public int DepartmentId { get; set; }
 
         [Required(ErrorMessage = "The fild {0} is requid")]
         [Range(1, double.MaxValue, ErrorMessage = "You mast select a {0}")]
+        [Display(Name = "City")]
         public int CityId { get; set; }
 
         [NotMapped]
@@ -47,6 +49,17 @@ namespace EcommerceApp.Models
         public virtual ICollection<Category> Categories { get; set; }
         public virtual ICollection<Tax> Taxes { get; set; }
         public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<CompanyCustomer> CompanyCustomers { get; set; }
+        public virtual ICollection<Warehouse> Warehouses { get; set; }
+        public virtual ICollection<Order> Orders { get; set; }
+        public virtual ICollection<Supplier> Suppliers { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
+        public virtual ICollection<Sale> Sales { get; set; }
+
+
+
+
+
 
     }
 }

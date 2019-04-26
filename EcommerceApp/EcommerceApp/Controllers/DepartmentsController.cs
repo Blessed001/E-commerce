@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using EcommerceApp.Classes;
 using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
@@ -47,29 +48,18 @@ namespace EcommerceApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "DepartmentId,Name")] Department department)
+        public ActionResult Create(Department department)
         {
             if (ModelState.IsValid)
             {
                 db.Departments.Add(department);
-                try
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
                 {
-                    db.SaveChanges();
                     return RedirectToAction("Index");
                 }
-                catch (Exception ex)
-                {
-                    if (ex.InnerException != null &&
-                                        ex.InnerException.InnerException != null &&
-                                        ex.InnerException.InnerException.Message.Contains("_Index"))
-                    {
-                        ModelState.AddModelError(string.Empty, "There are a record with the seme value");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, ex.Message);
-                    }
-                }
+
+                ModelState.AddModelError(string.Empty, response.Message);
             }
 
             return View(department);
@@ -95,28 +85,15 @@ namespace EcommerceApp.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "DepartmentId,Name")] Department department)
+        public ActionResult Edit(Department department)
         {
             if (ModelState.IsValid)
             {
                 db.Entry(department).State = EntityState.Modified;
-                try
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
                 {
-                    db.SaveChanges();
                     return RedirectToAction("Index");
-                }
-                catch (Exception ex)
-                {
-                    if (ex.InnerException != null &&
-                        ex.InnerException.InnerException != null &&
-                        ex.InnerException.InnerException.Message.Contains("_Index"))
-                    {
-                        ModelState.AddModelError(string.Empty, "There are a record with the seme value");
-                    }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, ex.Message);
-                    }
                 }
             }
             return View(department);
@@ -144,24 +121,13 @@ namespace EcommerceApp.Controllers
         {
             Department department = db.Departments.Find(id);
             db.Departments.Remove(department);
-            try
+            var response = DBHelper.SaveChanges(db);
+            if (response.Succeeded)
             {
-                db.SaveChanges();
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
-            {
-                if (ex.InnerException != null &&
-                    ex.InnerException.InnerException != null &&
-                    ex.InnerException.InnerException.Message.Contains("REFERENCE"))
-                {
-                    ModelState.AddModelError(string.Empty, "The record can't be delete becouse it as related record");
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, ex.Message);
-                }
-            }
+
+            ModelState.AddModelError(string.Empty, response.Message);
             return View(department);
         }
 

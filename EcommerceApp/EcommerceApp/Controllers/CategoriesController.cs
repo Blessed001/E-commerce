@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using EcommerceApp.Classes;
 using EcommerceApp.Models;
 
+
 namespace EcommerceApp.Controllers
 {
     [Authorize(Roles ="User")]
@@ -35,7 +36,7 @@ namespace EcommerceApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            var category = db.Categories.Find(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -67,8 +68,13 @@ namespace EcommerceApp.Controllers
             if (ModelState.IsValid)
             {
                 db.Categories.Add(category);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, response.Message);
             }
 
             return View(category);
@@ -81,7 +87,7 @@ namespace EcommerceApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            var category = db.Categories.Find(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -99,8 +105,11 @@ namespace EcommerceApp.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(category).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
             }       
             return View(category);
         }
@@ -112,7 +121,7 @@ namespace EcommerceApp.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Category category = db.Categories.Find(id);
+            var category = db.Categories.Find(id);
             if (category == null)
             {
                 return HttpNotFound();
@@ -125,10 +134,16 @@ namespace EcommerceApp.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Category category = db.Categories.Find(id);
+            var category = db.Categories.Find(id);
             db.Categories.Remove(category);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var response = DBHelper.SaveChanges(db);
+            if (response.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError(string.Empty, response.Message);
+            return View(category);
         }
 
         protected override void Dispose(bool disposing)

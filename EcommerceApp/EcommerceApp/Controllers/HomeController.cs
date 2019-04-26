@@ -1,5 +1,4 @@
-﻿using EcommerceApp.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,12 +8,9 @@ namespace EcommerceApp.Controllers
 {
     public class HomeController : Controller
     {
-        private EcommerceContext db = new EcommerceContext();
-
         public ActionResult Index()
         {
-            var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            return View(user);
+            return View();
         }
 
         public ActionResult About()

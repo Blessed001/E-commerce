@@ -1,0 +1,107 @@
+﻿@model IEnumerable<EcommerceApp.Models.Order>
+
+@{
+    ViewBag.Title = "Orders";
+}
+
+<h2>Orders</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create", new { }, new { @class = "btn btn-primary" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Customer.FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.State.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Remarks)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Customer.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.State.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Remarks)
+        </td>
+        @if (item.StateId == 4)
+        {
+            <td>
+                @Html.ActionLink("See details", "Details", new { id = item.OrderId }, new { @class = "dialog-window btn btn-info" })
+                @Html.ActionLink(" In process", "Delete", new { id = item.OrderId }, new { @class = "btn btn-warning", onclick = "return confirm('Your order in process')" })
+            </td>
+        }
+        else if (item.StateId == 5)
+        {
+            <td>
+                @Html.ActionLink("See details", "Details", new { id = item.OrderId }, new { @class = "dialog-window btn btn-info" })
+                @Html.ActionLink(" Finished", "Delete", new { id = item.OrderId }, new { @class = "btn btn-success", onclick = "return confirm('Your order was Finished')" })
+            </td>
+        }
+        else
+        {
+            <td>
+                @Html.ActionLink("See details", "Details", new { id = item.OrderId }, new { @class = "dialog-window btn btn-info" })
+                @Html.ActionLink(" Cancel Purchase", "Delete", new { id = item.OrderId }, new { @class = "btn btn-danger", onclick = "return confirm('Are you sure to cancel this order ?')" })
+            </td>
+        }
+    </tr>
+    }
+
+</table>
+
+<div class="modal fade" id="Details" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h2 class="modal-title"></h2>
+            </div>
+            <div class="modal-body"><div class="te">Please wait...</div></div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("body").on("click", "a.dialog-window", null, function (e) {
+                e.preventDefault();
+                var $link = $(this);
+                var title = $link.text();
+                $('#Details .modal-title').html(title);
+                var url = $(this).attr('href');
+                if (url.indexOf('#') == 0) {
+                    $('#Details').modal('show');
+                }
+                else {
+                    $.get(url, function (data) {
+                        $('#Details .te').html(data);
+                        $('#Details').modal();
+                    }).success(function () { $('input:text:visible:first').focus(); });
+
+                }
+            });
+        });
+
+
+    </script>
+}

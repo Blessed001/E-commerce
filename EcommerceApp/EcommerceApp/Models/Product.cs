@@ -43,7 +43,7 @@ namespace EcommerceApp.Models
 
         [Required(ErrorMessage = "The field {0} is requerid!")]
         [Range(0, double.MaxValue, ErrorMessage = "You mast select a {0} between {1} and {2}")]
-        [DisplayFormat(DataFormatString = "{0:C2}", ApplyFormatInEditMode = false)]
+        [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = false)]
         public decimal Price { get; set; }
 
         [DataType(DataType.ImageUrl)]
@@ -56,9 +56,26 @@ namespace EcommerceApp.Models
         [DataType(DataType.MultilineText)]
         public string Remarks { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:N2}", ApplyFormatInEditMode = false)]
+        [Display(Name = "In Stock")]
+        public double Stock { get { return Inventories == null ? 0 : Inventories.Sum(i => i.Stock); } }
+
         public virtual Company Company { get; set; }
         public virtual Category Category { get; set; }
         public virtual Tax Tax { get; set; }
+        public virtual ICollection<Inventory> Inventories { get; set; }
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<PurchaseDetail> PurchaseDetails { get; set; }
+        public virtual ICollection<OrderDetailTmp> OrderDetailTmps { get; set; }
+        public virtual ICollection<PurchaseDetailTmp> PurchaseDetailsTmps { get; set; }
+        public virtual ICollection<SaleDetail> SaleDetails { get; set; }
+        public virtual ICollection<SaleDetailTemp> SaleDetailTemps { get; set; }
+
+
+
+
+
+
 
     }
 }

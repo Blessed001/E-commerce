@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Web;
 
@@ -53,7 +54,7 @@ namespace EcommerceApp.Models
         [Display(Name = "Company")]
         public int CompanyId { get; set; }
 
-        [Display(Name = "User")]
+        [Display(Name = "Employee")]
         public string FullName { get { return string.Format("{0} {1}", FirstName,LastName); } }
 
         [NotMapped]
@@ -62,5 +63,9 @@ namespace EcommerceApp.Models
         public virtual Department Department { get; set; }
         public virtual City City { get; set; }
         public virtual Company Company { get; set; }
+        public virtual ICollection<Sale> Sales { get; set; }
+        public virtual ICollection<Purchase> Purchases { get; set; }
+
+
     }
 }

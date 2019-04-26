@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using EcommerceApp.Classes;
 using EcommerceApp.Models;
 
 namespace EcommerceApp.Controllers
@@ -15,7 +16,6 @@ namespace EcommerceApp.Controllers
     {
         private EcommerceContext db = new EcommerceContext();
 
-        // GET: Taxes
         public ActionResult Index()
         {
             var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
@@ -27,7 +27,6 @@ namespace EcommerceApp.Controllers
             return View(taxes.ToList());
         }
 
-        // GET: Taxes/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -42,7 +41,6 @@ namespace EcommerceApp.Controllers
             return View(tax);
         }
 
-        // GET: Taxes/Create
         public ActionResult Create()
         {
             var user = db.Users.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
@@ -54,9 +52,6 @@ namespace EcommerceApp.Controllers
             return View(tax);
         }
 
-        // POST: Taxes/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Tax tax)
@@ -65,14 +60,17 @@ namespace EcommerceApp.Controllers
             {
                 tax.Rate = tax.Rate / 100;
                 db.Taxes.Add(tax);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError(string.Empty, response.Message);
             }
 
             return View(tax);
         }
-
-        // GET: Taxes/Edit/5
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -88,9 +86,6 @@ namespace EcommerceApp.Controllers
             return View(tax);
         }
 
-        // POST: Taxes/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Tax tax)
@@ -99,13 +94,15 @@ namespace EcommerceApp.Controllers
             {
                 tax.Rate = tax.Rate / 100;
                 db.Entry(tax).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                var response = DBHelper.SaveChanges(db);
+                if (response.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
             }
             return View(tax);
         }
 
-        // GET: Taxes/Delete/5
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -120,15 +117,20 @@ namespace EcommerceApp.Controllers
             return View(tax);
         }
 
-        // POST: Taxes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
             Tax tax = db.Taxes.Find(id);
             db.Taxes.Remove(tax);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+            var response = DBHelper.SaveChanges(db);
+            if (response.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError(string.Empty, response.Message);
+            return View(tax);
         }
 
         protected override void Dispose(bool disposing)
